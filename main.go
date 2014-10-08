@@ -92,7 +92,7 @@ func handleConn(c *Client) {
 			if err != nil {
 				log.Println(err)
 				c.writeline("500 unexpected error")
-				continue
+				return
 			}
 			c.writeline("250 OK: Queued as 298892")
 		case strings.Index(cmd, "QUIT") == 0:
