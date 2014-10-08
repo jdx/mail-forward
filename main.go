@@ -62,7 +62,6 @@ func handleConn(c *Client) {
 	defer c.Close()
 	fmt.Println("connection received")
 	c.writeline("220 mail.dickey.xxx")
-	c.out.Flush()
 	for {
 		input := c.readline()
 		cmd := strings.ToUpper(input)
@@ -88,7 +87,7 @@ func handleConn(c *Client) {
 			c.mailTo = append(c.mailTo, input[8:])
 			c.writeline("250 Accepted")
 		case strings.Index(cmd, "DATA") == 0:
-			c.writeline(`354 End data with <CR><LF>.<CR><LF>`)
+			c.writeline("354 End data with <CR><LF>.<CR><LF>")
 			err := c.readdata()
 			if err != nil {
 				log.Println(err)
@@ -103,12 +102,12 @@ func handleConn(c *Client) {
 			c.writeline("500 unrecognized command")
 			log.Println("Unrecognized:", input)
 		}
-		c.out.Flush()
 	}
 }
 
 func (c *Client) writeline(s string) {
 	c.out.WriteString(s + "\r\n")
+	c.out.Flush()
 	fmt.Println("snt:", s)
 }
 
