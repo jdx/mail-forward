@@ -86,12 +86,14 @@ func handleConn(c *Client) {
 			c.mailTo = append(c.mailTo, input[8:])
 			c.writeline("250 Accepted")
 		case strings.Index(cmd, "DATA") == 0:
-			c.writeline(`354 Enter message, ending with "." on a line by itself`)
+			c.writeline(`354 End data with <CR><LF>.<CR><LF>`)
 			err := c.readdata()
 			if err != nil {
 				log.Println(err)
 				c.writeline("500 unexpected error")
+				continue
 			}
+			c.writeline("250 OK: Queued as 298892")
 		case strings.Index(cmd, "QUIT") == 0:
 			c.writeline("221 Bye")
 			return
