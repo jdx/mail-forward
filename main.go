@@ -7,7 +7,6 @@ import (
 	"fmt"
 	"log"
 	"net"
-	"net/mail"
 	"os"
 	"strings"
 	"time"
@@ -124,11 +123,11 @@ func (c *Client) readline() string {
 func (c *Client) readdata() error {
 	for {
 		c.SetDeadline(time.Now().Add(time.Minute))
-		msg, err := mail.ReadMessage(c.in)
+		line, err := c.in.ReadString('\n')
 		if err != nil {
 			return err
 		}
-		fmt.Println("msg:", msg)
+		fmt.Println("line:", line)
 	}
 }
 
