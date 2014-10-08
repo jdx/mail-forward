@@ -48,7 +48,7 @@ func handleConn(c *Client) {
 			c.writeline("250-SIZE 35882577")
 			c.writeline("250-8BITMIME")
 			c.writeline("250-ENHANCEDSTATUSCODES")
-			c.writeline("250-SMTPUTF8")
+			c.writeline("250 SMTPUTF8")
 		case strings.Index(cmd, "NOOP") == 0:
 			c.writeline("250 OK")
 		case strings.Index(cmd, "QUIT") == 0:
