@@ -65,6 +65,8 @@ func handleConn(c *Client) {
 		input := c.readline()
 		cmd := strings.ToUpper(input)
 		switch {
+		case strings.Index(cmd, "HELO") == 0:
+			c.writeline("220 mail.dickey.xxx SMTP")
 		case strings.Index(cmd, "EHLO") == 0:
 			c.writeline("250-mail.dickey.xxx")
 			c.writeline("250-SIZE 35882577")
