@@ -30,8 +30,9 @@ func main() {
 
 type Client struct {
 	net.Conn
-	in  *bufio.Reader
-	out *bufio.Writer
+	in       *bufio.Reader
+	out      *bufio.Writer
+	mailFrom string
 }
 
 func handleConn(c *Client) {
@@ -51,9 +52,14 @@ func handleConn(c *Client) {
 			c.writeline("250 SMTPUTF8")
 		case strings.Index(cmd, "NOOP") == 0:
 			c.writeline("250 OK")
+		case strings.Index(cmd, "MAIL FROM:") == 0:
+			c.mailFrom = input[8:]
+			c.writeline("250 Accepted")
 		case strings.Index(cmd, "QUIT") == 0:
 			c.writeline("221 Bye")
 			return
+		default:
+			c.writeline("500 unrecognized command")
 		}
 		c.out.Flush()
 	}
