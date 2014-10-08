@@ -85,6 +85,13 @@ func handleConn(c *Client) {
 		case strings.Index(cmd, "RCPT TO:") == 0:
 			c.mailTo = append(c.mailTo, input[8:])
 			c.writeline("250 Accepted")
+		case strings.Index(cmd, "DATA") == 0:
+			c.writeline(`354 Enter message, ending with "." on a line by itself`)
+			err := c.readdata()
+			if err != nil {
+				log.Println(err)
+				c.writeline("500 unexpected error")
+			}
 		case strings.Index(cmd, "QUIT") == 0:
 			c.writeline("221 Bye")
 			return
@@ -109,6 +116,19 @@ func (c *Client) readline() string {
 	line = strings.TrimSpace(line)
 	fmt.Println("rcv:", line)
 	return line
+}
+
+func (c *Client) readdata() error {
+	for {
+		line, err := c.in.ReadString('\n')
+		if err != nil {
+			return err
+		}
+		fmt.Println("line:", line)
+		if line == "\r\n.\r\n" {
+			return nil
+		}
+	}
 }
 
 func (c *Client) upgradeTLS() {
