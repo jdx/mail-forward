@@ -9,6 +9,7 @@ import (
 	"net"
 	"os"
 	"strings"
+	"time"
 )
 
 var TLSConfig *tls.Config
@@ -122,6 +123,7 @@ func (c *Client) readline() string {
 
 func (c *Client) readdata() error {
 	for {
+		c.SetDeadline(time.Now().Add(time.Minute))
 		line, err := c.in.ReadString('\n')
 		if err != nil {
 			return err
