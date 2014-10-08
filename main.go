@@ -38,6 +38,7 @@ func handleConn(c *Client) {
 	defer c.Close()
 	fmt.Println("connection received")
 	c.writeline("220 mail.dickey.xxx")
+	c.out.Flush()
 	for {
 		input := c.readline()
 		cmd := strings.ToUpper(input)
