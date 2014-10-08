@@ -128,6 +128,9 @@ func (c *Client) readdata() error {
 			return err
 		}
 		fmt.Println("line:", line)
+		if line == "\r\n.\r\n" {
+			return nil
+		}
 	}
 }
 
