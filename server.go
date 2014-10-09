@@ -101,7 +101,7 @@ func cmdNoop(c *Client, mail *Mail, input string) error {
 }
 
 func cmdMailFrom(c *Client, mail *Mail, input string) error {
-	mail.From = input[8:]
+	mail.From = input[10:]
 	c.writeline("250 Accepted")
 	return nil
 }
