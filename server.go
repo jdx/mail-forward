@@ -21,6 +21,7 @@ type Client struct {
 type Mail struct {
 	From string
 	To   []string
+	Data *io.Closer
 }
 
 var addressRegex = regexp.MustCompile("MAIL FROM:<(.*)>.*")
@@ -116,10 +117,8 @@ func cmdRcptTo(c *Client, mail *Mail, input string) error {
 }
 
 func cmdData(c *Client, mail *Mail, input string) error {
-	err := SendMail(mail)
-	if err != nil {
-		return err
-	}
+	r, w := io.Pipe()
+	done := SendMail(mail.From, mail.To, r)
 	c.writeline("354 End data with <CR><LF>.<CR><LF>")
 	for {
 		c.conn.SetDeadline(time.Now().Add(time.Minute))
@@ -127,11 +126,18 @@ func cmdData(c *Client, mail *Mail, input string) error {
 		if err != nil {
 			return err
 		}
+		w.Write([]byte(line))
 		if line == ".\r\n" {
-			c.writeline("250 OK")
-			return nil
+			w.Close()
+			break
 		}
 	}
+	err := <-done
+	if err != nil {
+		return err
+	}
+	c.writeline("250 OK")
+	return nil
 }
 
 func cmdQuit(c *Client, mail *Mail, input string) error {
