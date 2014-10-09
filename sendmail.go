@@ -6,7 +6,7 @@ import (
 )
 
 func SendMail(mail *Mail) error {
-	c, err := smtp.Dial("mx.google.com:25")
+	c, err := smtp.Dial("smtp.google.com:25")
 	if err != nil {
 		return err
 	}
