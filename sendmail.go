@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bufio"
 	"fmt"
 	"io"
 	"net/smtp"
@@ -32,6 +33,7 @@ func SendMail(from string, to []string, data io.ReadCloser) <-chan error {
 			done <- err
 			return
 		}
+		bufio.NewWriter(wc).ReadFrom(data)
 		_, err = fmt.Fprintf(wc, "This is the email body")
 		if err != nil {
 			done <- err
