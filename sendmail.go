@@ -15,6 +15,7 @@ func SendMail(mail *Mail) error {
 		return err
 	}
 	for _, to := range mail.To {
+		to = "jeff@dickeyxxx.com"
 		fmt.Println("Sending email to", to)
 		if err := c.Rcpt(to); err != nil {
 			return err
