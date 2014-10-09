@@ -127,6 +127,7 @@ func cmdData(c *Client, mail *Mail, input string) error {
 			return err
 		}
 		w.Write([]byte(line))
+		fmt.Println("line:", line)
 		if line == ".\r\n" {
 			w.Close()
 			break
