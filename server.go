@@ -39,6 +39,7 @@ func handleConn(c *Client) {
 	c.writeline("220 mail.dickey.xxx")
 	for {
 		input, err := c.in.ReadString('\n')
+		input = strings.TrimSpace(input)
 		fmt.Println("rcv:", input)
 		if err != nil {
 			log.Println(err)
