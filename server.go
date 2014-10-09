@@ -129,7 +129,7 @@ func cmdData(c *Client, mail *Mail, input string) error {
 		line = strings.TrimSpace(line)
 		w.Write([]byte(line))
 		fmt.Printf("%#v\n", line)
-		if line == ".\r\n" {
+		if line == "." {
 			w.Close()
 			break
 		}
