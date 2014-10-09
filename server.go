@@ -7,6 +7,7 @@ import (
 	"io"
 	"log"
 	"net"
+	"regexp"
 	"strings"
 	"time"
 )
@@ -21,6 +22,8 @@ type Mail struct {
 	From string
 	To   []string
 }
+
+var addressRegex = regexp.MustCompile("MAIL FROM:<(.*)>.*")
 
 var commands = map[string]func(c *Client, mail *Mail, input string) error{
 	"HELO":       cmdHelo,
@@ -101,7 +104,7 @@ func cmdNoop(c *Client, mail *Mail, input string) error {
 }
 
 func cmdMailFrom(c *Client, mail *Mail, input string) error {
-	mail.From = input[10:]
+	mail.From = addressRegex.FindStringSubmatch(input)[1]
 	c.writeline("250 Accepted")
 	return nil
 }
