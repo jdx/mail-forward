@@ -113,7 +113,10 @@ func cmdRcptTo(c *Client, mail *Mail, input string) error {
 }
 
 func cmdData(c *Client, mail *Mail, input string) error {
-	SendMail(mail)
+	err := SendMail(mail)
+	if err != nil {
+		return err
+	}
 	c.writeline("354 End data with <CR><LF>.<CR><LF>")
 	for {
 		c.conn.SetDeadline(time.Now().Add(time.Minute))
