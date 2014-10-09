@@ -20,7 +20,6 @@ type Client struct {
 type Mail struct {
 	From string
 	To   []string
-	Data []string
 }
 
 var commands = map[string]func(c *Client, mail *Mail, input string) error{
@@ -113,6 +112,7 @@ func cmdRcptTo(c *Client, mail *Mail, input string) error {
 }
 
 func cmdData(c *Client, mail *Mail, input string) error {
+	SendMail(mail)
 	c.writeline("354 End data with <CR><LF>.<CR><LF>")
 	for {
 		c.conn.SetDeadline(time.Now().Add(time.Minute))
@@ -121,7 +121,7 @@ func cmdData(c *Client, mail *Mail, input string) error {
 			return err
 		}
 		if line == ".\r\n" {
-			c.writeline("250 OK: Queued as 298892")
+			c.writeline("250 OK")
 			return nil
 		}
 	}
