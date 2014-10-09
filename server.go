@@ -40,7 +40,7 @@ func handleConn(c *Client) {
 	for {
 		input, err := c.in.ReadString('\n')
 		input = strings.TrimSpace(input)
-		fmt.Println("rcv:", input)
+		fmt.Println("c:", input)
 		if err != nil {
 			log.Println(err)
 			return
@@ -142,5 +142,5 @@ func cmdUnknown(c *Client, mail *Mail, input string) error {
 func (c *Client) writeline(s string) {
 	c.out.WriteString(s + "\r\n")
 	c.out.Flush()
-	fmt.Println("snt:", s)
+	fmt.Println("s:", s)
 }
