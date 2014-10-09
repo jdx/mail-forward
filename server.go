@@ -24,7 +24,7 @@ type Mail struct {
 	Data *io.Closer
 }
 
-var addressRegex = regexp.MustCompile("MAIL FROM:<(.*)>.*")
+var addressRegex = regexp.MustCompile("MAIL FROM: ?<(.*)>.*")
 
 var commands = map[string]func(c *Client, mail *Mail, input string) error{
 	"HELO":       cmdHelo,
@@ -81,7 +81,6 @@ func cmdEhlo(c *Client, mail *Mail, input string) error {
 	c.writeline("250-SIZE 35882577")
 	//c.writeline("250-STARTTLS")
 	c.writeline("250-8BITMIME")
-	c.writeline("250-ENHANCEDSTATUSCODES")
 	c.writeline("250 SMTPUTF8")
 	return nil
 }
