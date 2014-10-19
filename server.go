@@ -15,7 +15,8 @@ type Mail struct {
 	To   []string
 }
 
-var addressRegex = regexp.MustCompile("MAIL FROM: ?<(.*)>.*")
+var mailFromRegex = regexp.MustCompile("MAIL FROM: ?<(.*)>.*")
+var rcptToRegex = regexp.MustCompile("RCPT TO: ?<(.*)>.*")
 
 type cmdFn func(c *textproto.Conn, mail *Mail, input string) error
 
@@ -65,8 +66,7 @@ func parseCmd(input string) cmdFn {
 }
 
 func cmdHelo(c *textproto.Conn, mail *Mail, input string) error {
-	c.PrintfLine("220 mx.grandcentralemail.com")
-	return nil
+	return c.PrintfLine("220 mx.grandcentralemail.com")
 }
 
 func cmdEhlo(c *textproto.Conn, mail *Mail, input string) error {
@@ -74,8 +74,7 @@ func cmdEhlo(c *textproto.Conn, mail *Mail, input string) error {
 	c.PrintfLine("250-SIZE 35882577")
 	//c.PrintfLine("250-STARTTLS")
 	c.PrintfLine("250-8BITMIME")
-	c.PrintfLine("250 SMTPUTF8")
-	return nil
+	return c.PrintfLine("250 SMTPUTF8")
 }
 
 func cmdStartTLS(c *textproto.Conn, mail *Mail, input string) error {
@@ -92,20 +91,21 @@ func cmdStartTLS(c *textproto.Conn, mail *Mail, input string) error {
 }
 
 func cmdNoop(c *textproto.Conn, mail *Mail, input string) error {
-	c.PrintfLine("250 OK")
-	return nil
+	return c.PrintfLine("250 OK")
 }
 
 func cmdMailFrom(c *textproto.Conn, mail *Mail, input string) error {
-	mail.From = addressRegex.FindStringSubmatch(input)[1]
-	c.PrintfLine("250 Accepted")
-	return nil
+	mail.From = mailFromRegex.FindStringSubmatch(input)[1]
+	return c.PrintfLine("250 Accepted")
 }
 
 func cmdRcptTo(c *textproto.Conn, mail *Mail, input string) error {
-	mail.To = append(mail.To, input)
-	c.PrintfLine("250 Accepted")
-	return nil
+	address := rcptToRegex.FindStringSubmatch(input)[1]
+	if !strings.HasSuffix(address, "dickeyxxx.com") {
+		return c.PrintfLine("500 Invalid email")
+	}
+	mail.To = append(mail.To, address)
+	return c.PrintfLine("250 Accepted")
 }
 
 func cmdData(c *textproto.Conn, mail *Mail, input string) error {
@@ -127,7 +127,6 @@ func cmdQuit(c *textproto.Conn, mail *Mail, input string) error {
 }
 
 func cmdUnknown(c *textproto.Conn, mail *Mail, input string) error {
-	c.PrintfLine("500 Unrecognized command")
 	log.Println("Unrecognized command:", input)
-	return nil
+	return c.PrintfLine("500 Unrecognized command")
 }
