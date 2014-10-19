@@ -31,5 +31,9 @@ func SendMail(from string, to []string, lines []string) error {
 			return err
 		}
 	}
+	err = c.Close()
+	if err != nil {
+		return err
+	}
 	return c.Quit()
 }
