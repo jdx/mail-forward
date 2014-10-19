@@ -1,0 +1,54 @@
+Received: by mail-qg0-f51.google.com with SMTP id z107so2629483qgd.10
+for <jeff@mail.dickey.xxx>; Sun, 19 Oct 2014 12:25:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+d=gmail.com; s=20120113;
+h=date:mime-version:message-id:from:to:subject:content-type;
+bh=F3mMrGXcTGZ6aaUcFbiaXienGFTXPLrDWrN11F+/TV4=;
+b=aGJkkgWfAXb7u5U7z89znpEks9Vw5aqt5n5AnnXKMFeGVr5ekTitoFoyjmX2vawrB3
+2jiLLWIo+gyzUg6SIWbf72+x4C1odYdqh1VKX85jFKmNFSk6Egu1QWzSrag5Bwx4zqyI
+akjJD85pDLaEgMTaSOz2sHx5h2Q5YOTQA5Uv0QyYb3Z+3CoEVw+EZyYCCFcQFDB7YMkb
+0+j3wYVuq/Jttml2aRWnYQT7ucAJg1QzCK8NxfEJu2rsZF3gVyjk+hqam3rAEoQQ3Bi4
+jj9btWpbhNvVo+xmhv9Uk5kU84kjbMlSI/gAV3nDf1kovePC1hWUsZkRJmLZCsjHTOD/
+Snww==
+X-Received: by 10.140.17.67 with SMTP id 61mr28089534qgc.59.1413746756898;
+Sun, 19 Oct 2014 12:25:56 -0700 (PDT)
+Return-Path: <dickeyxxx@gmail.com>
+Received: from hedwig-14.prd.orcali.com (ec2-54-85-253-60.compute-1.amazonaws.com. [54.85.253.60])
+by mx.google.com with ESMTPSA id j3sm6007899qai.45.2014.10.19.12.25.56
+for <jeff@mail.dickey.xxx>
+(version=TLSv1 cipher=ECDHE-RSA-RC4-SHA bits=128/128);
+Sun, 19 Oct 2014 12:25:56 -0700 (PDT)
+Date: Sun, 19 Oct 2014 12:25:56 -0700 (PDT)
+X-Google-Original-Date: Sun, 19 Oct 2014 19:25:56 GMT
+MIME-Version: 1.0
+X-Mailer: Nodemailer (0.5.0; +http://www.nodemailer.com/)
+Message-Id: <1413746756498.a776cf1e@Nodemailer>
+X-Orchestra-Oid: 8B528421-3E90-48A6-B588-AAAAF4ED485E
+X-Orchestra-Sig: f2f89d6ecaf958b4b7febf3be64e7e38146ead7c
+X-Orchestra-Thrid: 60984C70-1C93-4696-9B9C-A8C8B0C70B22
+X-Orchestra-Thrid-Sig: 8f529b4dddbdef066d83db5499b56dacd3685645
+X-Orchestra-Account: 9d87b762f30562000218d0b485f73e593ce7b0c4
+From: \"Jeff Dickey\" <dickeyxxx@gmail.com>
+To: jeff@mail.dickey.xxx
+Subject: foobar
+Content-Type: multipart/alternative;
+boundary=\"----Nodemailer-0.5.0-?=_1-1413746756634\"
+
+------Nodemailer-0.5.0-?=_1-1413746756634
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+
+lsdkfj
+------Nodemailer-0.5.0-?=_1-1413746756634
+Content-Type: text/html; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+
+<!DOCTYPE html PUBLIC =22-//W3C//DTD HTML 4.0 Transitional//EN=22 =
+=22http://www.w3.org/TR/REC-html40/loose.dtd=22>
+<html><body>
+<span id=3D=22mailbox-conversation=22><div>lsdkfj</div></span><div =
+class=3D=22mailbox=5Fsignature=22><br></div>
+</body></html>
+
+------Nodemailer-0.5.0-?=_1-1413746756634--
+.
