@@ -45,7 +45,7 @@ func setupTLS() *tls.Config {
 	config := &tls.Config{
 		Certificates: []tls.Certificate{cert},
 		ClientAuth:   tls.VerifyClientCertIfGiven,
-		ServerName:   "mail.dickey.xxx",
+		ServerName:   "mx.grandcentralemail.com",
 	}
 	config.Rand = rand.Reader
 	return config

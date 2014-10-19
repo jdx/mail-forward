@@ -7,6 +7,7 @@ import (
 
 func SendMail(from string, to []string, lines []string) error {
 	c, err := smtp.Dial("gmail-smtp-in.l.google.com:25")
+	defer c.Close()
 	if err != nil {
 		return err
 	}

@@ -34,7 +34,7 @@ func handleConn(conn net.Conn) {
 	c := textproto.NewConn(conn)
 	defer c.Close()
 	mail := &Mail{}
-	c.PrintfLine("220 mail.dickey.xxx")
+	c.PrintfLine("220 mx.grandcentralemail.com")
 	for {
 		input, err := c.ReadLine()
 		fmt.Println("c:", input)
@@ -65,12 +65,12 @@ func parseCmd(input string) cmdFn {
 }
 
 func cmdHelo(c *textproto.Conn, mail *Mail, input string) error {
-	c.PrintfLine("220 mail.dickey.xxx")
+	c.PrintfLine("220 mx.grandcentralemail.com")
 	return nil
 }
 
 func cmdEhlo(c *textproto.Conn, mail *Mail, input string) error {
-	c.PrintfLine("250-mail.dickey.xxx")
+	c.PrintfLine("250-mx.grandcentralemail.com")
 	c.PrintfLine("250-SIZE 35882577")
 	//c.PrintfLine("250-STARTTLS")
 	c.PrintfLine("250-8BITMIME")
