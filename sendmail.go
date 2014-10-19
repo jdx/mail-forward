@@ -1,54 +1,34 @@
 package main
 
 import (
-	"bufio"
 	"fmt"
-	"io"
 	"net/smtp"
 )
 
-func SendMail(from string, to []string, data io.ReadCloser) <-chan error {
-	done := make(chan error)
-	go func() {
-		c, err := smtp.Dial("gmail-smtp-in.l.google.com:25")
-		if err != nil {
-			done <- err
-			return
+func SendMail(from string, to []string, lines []string) error {
+	c, err := smtp.Dial("gmail-smtp-in.l.google.com:25")
+	if err != nil {
+		return err
+	}
+	fmt.Println("Sending email from", from)
+	if err := c.Mail(from); err != nil {
+		return err
+	}
+	for _, to := range to {
+		to = "dickeyxxx@gmail.com"
+		fmt.Println("Sending email to", to)
+		if err := c.Rcpt(to); err != nil {
+			return err
 		}
-		fmt.Println("Sending email from", from)
-		if err := c.Mail(from); err != nil {
-			done <- err
-			return
+	}
+	wc, err := c.Data()
+	if err != nil {
+		return err
+	}
+	for _, line := range lines {
+		if _, err = fmt.Fprintf(wc, line); err != nil {
+			return err
 		}
-		for _, to := range to {
-			to = "dickeyxxx@gmail.com"
-			fmt.Println("Sending email to", to)
-			if err := c.Rcpt(to); err != nil {
-				done <- err
-				return
-			}
-		}
-		wc, err := c.Data()
-		if err != nil {
-			done <- err
-			return
-		}
-		bufio.NewWriter(wc).ReadFrom(data)
-		_, err = fmt.Fprintf(wc, "This is the email body")
-		if err != nil {
-			done <- err
-			return
-		}
-		err = wc.Close()
-		if err != nil {
-			done <- err
-			return
-		}
-		err = c.Quit()
-		if err != nil {
-			done <- err
-		}
-		close(done)
-	}()
-	return done
+	}
+	return c.Quit()
 }

@@ -1,7 +1,6 @@
 package main
 
 import (
-	"bufio"
 	"crypto/rand"
 	"crypto/tls"
 	"fmt"
@@ -25,11 +24,7 @@ func main() {
 		if err != nil {
 			panic(err)
 		}
-		go handleConn(&Client{
-			conn: conn,
-			in:   bufio.NewReader(conn),
-			out:  bufio.NewWriter(conn),
-		})
+		go handleConn(conn)
 	}
 }
 
