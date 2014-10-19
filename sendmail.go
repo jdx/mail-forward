@@ -6,7 +6,7 @@ import (
 )
 
 func SendMail(from string, to []string, lines []string) error {
-	c, err := smtp.Dial("mx1.mail.icloud.com:25")
+	c, err := smtp.Dial("alt1.gmail-smtp-in.l.google.com:25")
 	defer c.Close()
 	if err != nil {
 		return err
@@ -16,7 +16,7 @@ func SendMail(from string, to []string, lines []string) error {
 		return err
 	}
 	for _, to := range to {
-		to = "dickeytk@me.com"
+		to = "dickeyxxx@gmail.com"
 		fmt.Println("Sending email to", to)
 		if err := c.Rcpt(to); err != nil {
 			return err
