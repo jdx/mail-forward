@@ -38,7 +38,7 @@ func handleConn(conn net.Conn) {
 	c.PrintfLine("220 mx.grandcentralemail.com")
 	for {
 		input, err := c.Conn.ReadLine()
-		fmt.Println("c:", input)
+		fmt.Println("r:", input)
 		if err != nil {
 			log.Println(err)
 			return
@@ -114,7 +114,7 @@ func cmdData(c *Client, input string) error {
 	if err != nil {
 		return err
 	}
-	fmt.Printf("email received:\n %s\n", strings.Join(lines, "\n  "))
+	fmt.Printf("r:\n  %s\n", strings.Join(lines, "\n  "))
 	if err := SendMail(c.From, c.To, lines); err != nil {
 		return err
 	}
@@ -132,6 +132,6 @@ func cmdUnknown(c *Client, input string) error {
 }
 
 func (c *Client) PrintfLine(format string, args ...interface{}) error {
-	fmt.Printf("s: "+format, args...)
+	fmt.Printf("s: "+format+"\n", args...)
 	return c.Conn.PrintfLine(format, args...)
 }
