@@ -114,10 +114,11 @@ func cmdData(c *textproto.Conn, mail *Mail, input string) error {
 	if err != nil {
 		return err
 	}
-	fmt.Printf("email received\n: %#v\n", lines)
-	SendMail(mail.From, mail.To, lines)
-	c.PrintfLine("250 OK")
-	return nil
+	fmt.Printf("email received:\n %s\n", lines)
+	if err := SendMail(mail.From, mail.To, lines); err != nil {
+		return err
+	}
+	return c.PrintfLine("250 OK")
 }
 
 func cmdQuit(c *textproto.Conn, mail *Mail, input string) error {
