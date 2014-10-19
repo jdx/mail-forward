@@ -10,7 +10,8 @@ import (
 	"strings"
 )
 
-type Mail struct {
+type Client struct {
+	Conn *textproto.Conn
 	From string
 	To   []string
 }
@@ -18,7 +19,7 @@ type Mail struct {
 var mailFromRegex = regexp.MustCompile("MAIL FROM: ?<(.*)>.*")
 var rcptToRegex = regexp.MustCompile("RCPT TO: ?<(.*)>.*")
 
-type cmdFn func(c *textproto.Conn, mail *Mail, input string) error
+type cmdFn func(c *Client, input string) error
 
 var commands = map[string]cmdFn{
 	"HELO":       cmdHelo,
@@ -32,19 +33,18 @@ var commands = map[string]cmdFn{
 }
 
 func handleConn(conn net.Conn) {
-	c := textproto.NewConn(conn)
-	defer c.Close()
-	mail := &Mail{}
+	c := &Client{Conn: textproto.NewConn(conn)}
+	defer c.Conn.Close()
 	c.PrintfLine("220 mx.grandcentralemail.com")
 	for {
-		input, err := c.ReadLine()
+		input, err := c.Conn.ReadLine()
 		fmt.Println("c:", input)
 		if err != nil {
 			log.Println(err)
 			return
 		}
 		f := parseCmd(input)
-		if err := f(c, mail, input); err != nil {
+		if err := f(c, input); err != nil {
 			if err == io.EOF {
 				return
 			}
@@ -65,11 +65,11 @@ func parseCmd(input string) cmdFn {
 	return cmdUnknown
 }
 
-func cmdHelo(c *textproto.Conn, mail *Mail, input string) error {
+func cmdHelo(c *Client, input string) error {
 	return c.PrintfLine("220 mx.grandcentralemail.com")
 }
 
-func cmdEhlo(c *textproto.Conn, mail *Mail, input string) error {
+func cmdEhlo(c *Client, input string) error {
 	c.PrintfLine("250-mx.grandcentralemail.com")
 	c.PrintfLine("250-SIZE 35882577")
 	//c.PrintfLine("250-STARTTLS")
@@ -77,7 +77,7 @@ func cmdEhlo(c *textproto.Conn, mail *Mail, input string) error {
 	return c.PrintfLine("250 SMTPUTF8")
 }
 
-func cmdStartTLS(c *textproto.Conn, mail *Mail, input string) error {
+func cmdStartTLS(c *Client, input string) error {
 	//c.PrintfLine("220 Ready to start TLS")
 	//tlsConn := tls.Server(c, TLSConfig)
 	//err := tlsConn.Handshake()
@@ -90,43 +90,48 @@ func cmdStartTLS(c *textproto.Conn, mail *Mail, input string) error {
 	return nil
 }
 
-func cmdNoop(c *textproto.Conn, mail *Mail, input string) error {
+func cmdNoop(c *Client, input string) error {
 	return c.PrintfLine("250 OK")
 }
 
-func cmdMailFrom(c *textproto.Conn, mail *Mail, input string) error {
-	mail.From = mailFromRegex.FindStringSubmatch(input)[1]
+func cmdMailFrom(c *Client, input string) error {
+	c.From = mailFromRegex.FindStringSubmatch(input)[1]
 	return c.PrintfLine("250 Accepted")
 }
 
-func cmdRcptTo(c *textproto.Conn, mail *Mail, input string) error {
+func cmdRcptTo(c *Client, input string) error {
 	address := rcptToRegex.FindStringSubmatch(input)[1]
 	if !strings.HasSuffix(address, "dickeyxxx.com") {
 		return c.PrintfLine("500 Invalid email")
 	}
-	mail.To = append(mail.To, address)
+	c.To = append(c.To, address)
 	return c.PrintfLine("250 Accepted")
 }
 
-func cmdData(c *textproto.Conn, mail *Mail, input string) error {
+func cmdData(c *Client, input string) error {
 	c.PrintfLine("354 End data with <CR><LF>.<CR><LF>")
-	lines, err := c.ReadDotLines()
+	lines, err := c.Conn.ReadDotLines()
 	if err != nil {
 		return err
 	}
-	fmt.Printf("email received:\n %s\n", lines)
-	if err := SendMail(mail.From, mail.To, lines); err != nil {
+	fmt.Printf("email received:\n %s\n", strings.Join(lines, "\n  "))
+	if err := SendMail(c.From, c.To, lines); err != nil {
 		return err
 	}
 	return c.PrintfLine("250 OK")
 }
 
-func cmdQuit(c *textproto.Conn, mail *Mail, input string) error {
+func cmdQuit(c *Client, input string) error {
 	c.PrintfLine("221 Bye")
 	return io.EOF
 }
 
-func cmdUnknown(c *textproto.Conn, mail *Mail, input string) error {
+func cmdUnknown(c *Client, input string) error {
 	log.Println("Unrecognized command:", input)
 	return c.PrintfLine("500 Unrecognized command")
+}
+
+func (c *Client) PrintfLine(format string, args ...interface{}) error {
+	fmt.Printf("s: "+format, args...)
+	return c.Conn.PrintfLine(format, args...)
 }

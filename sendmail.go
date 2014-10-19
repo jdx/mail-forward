@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"net/smtp"
+	"net/textproto"
 )
 
 func SendMail(from string, to []string, lines []string) error {
@@ -31,9 +32,18 @@ func SendMail(from string, to []string, lines []string) error {
 			return err
 		}
 	}
-	err = wc.Close()
+	wc.Close()
+	err = closeWithFullError(c)
+	return c.Quit()
+}
+
+func closeWithFullError(c *smtp.Client) error {
+	code, message, err := c.Text.ReadResponse(0)
 	if err != nil {
 		return err
 	}
-	return c.Quit()
+	if code != 250 {
+		return &textproto.Error{Code: code, Msg: message}
+	}
+	return nil
 }
